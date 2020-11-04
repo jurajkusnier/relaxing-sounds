@@ -1,2 +1,3 @@
 rootProject.name = "relaxing sounds"
 include ':app'
+include ':common'
