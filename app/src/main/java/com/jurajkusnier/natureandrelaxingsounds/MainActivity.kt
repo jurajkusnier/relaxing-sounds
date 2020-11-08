@@ -2,6 +2,7 @@ package com.jurajkusnier.natureandrelaxingsounds
 
 import android.content.ComponentName
 import android.media.AudioManager
+import android.media.MediaMetadata.METADATA_KEY_TITLE
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -10,6 +11,8 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
+import com.google.android.material.button.MaterialButton
 import com.jurajkusnier.common.MediaPlaybackService
 
 class MainActivity : AppCompatActivity() {
@@ -67,24 +70,27 @@ class MainActivity : AppCompatActivity() {
 
     fun buildTransportControls() {
         val mediaController = MediaControllerCompat.getMediaController(this@MainActivity)
-        // Grab the view for the play/pause button
-        findViewById<Button>(R.id.playPauseButton).apply {
-            setOnClickListener {
-                // Since this is a play/pause button, you'll need to test the current state
-                // and choose the action accordingly
 
-                val pbState = mediaController.playbackState.state
-                if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-                    mediaController.transportControls.pause()
-                } else {
-                    mediaController.transportControls.play()
-                }
+        findViewById<Button>(R.id.playPauseButton).setOnClickListener {
+            val pbState = mediaController.playbackState.state
+            if (pbState == PlaybackStateCompat.STATE_PLAYING) {
+                mediaController.transportControls.pause()
+            } else {
+                mediaController.transportControls.play()
             }
         }
 
+        findViewById<Button>(R.id.nextButton).setOnClickListener {
+            mediaController.transportControls.skipToNext()
+        }
+
+        findViewById<Button>(R.id.prevButton).setOnClickListener {
+            mediaController.transportControls.skipToPrevious()
+        }
+
         // Display the initial state
-        val metadata = mediaController.metadata
         bindPlayPauseButton(mediaController.playbackState)
+        bindMediaInfo(mediaController.metadata)
 
         // Register a Callback to stay in sync
         mediaController.registerCallback(controllerCallback)
@@ -92,7 +98,9 @@ class MainActivity : AppCompatActivity() {
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {
 
-        override fun onMetadataChanged(metadata: MediaMetadataCompat) {}
+        override fun onMetadataChanged(metadata: MediaMetadataCompat) {
+            bindMediaInfo(metadata)
+        }
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
             bindPlayPauseButton(state)
@@ -120,9 +128,17 @@ class MainActivity : AppCompatActivity() {
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
+    private fun bindMediaInfo(metadata: MediaMetadataCompat) {
+        findViewById<TextView>(R.id.titleTextView).text = metadata.getString(METADATA_KEY_TITLE)
+    }
+
     private fun bindPlayPauseButton(state: PlaybackStateCompat) {
-        findViewById<Button>(R.id.playPauseButton).text =
-            if (state.state == PlaybackStateCompat.STATE_PLAYING) "pause" else "play"
+        findViewById<MaterialButton>(R.id.playPauseButton).setIconResource(
+            if (state.state == PlaybackStateCompat.STATE_PLAYING)
+                R.drawable.ic_baseline_pause_24
+            else
+                R.drawable.ic_baseline_play_arrow_24
+        )
     }
 
     companion object {
