@@ -1,7 +1,10 @@
-package com.jurajkusnier.common
+package com.jurajkusnier.common.utils
 
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -11,8 +14,8 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.media.app.NotificationCompat.MediaStyle
 import androidx.media.session.MediaButtonReceiver
+import com.jurajkusnier.common.R
 
 
 class MyNotificationManager(private val context: Context) {
@@ -30,28 +33,6 @@ class MyNotificationManager(private val context: Context) {
         return channelId
     }
 
-    fun showSimpleNotification(mediaSession: MediaSessionCompat) {
-        val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ic_notification)
-        val channelId =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel("my_service", "My Background Service")
-            } else {
-                // If earlier version channel ID is not used
-                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                ""
-            }
-
-        val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Track title")
-            .setContentText("Artist - Album")
-            .setLargeIcon(bitmap)
-            .setStyle(MediaStyle().setMediaSession(mediaSession.sessionToken))
-            .build()
-
-        (context as Service).startForeground(NOW_PLAYING_NOTIFICATION_ID, notification)
-    }
-
     fun showNotification(mediaSession: MediaSessionCompat, isPlaying: Boolean) {
 
         val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ic_notification)
@@ -65,14 +46,12 @@ class MyNotificationManager(private val context: Context) {
             }
 
         val controller = mediaSession.controller
-        val mediaMetadata = controller.metadata
-//        val description = mediaMetadata?.description
 
         val builder = NotificationCompat.Builder(context, channelId).apply {
             // Add the metadata for the currently playing track
-            setContentTitle("Unknown")
-            setContentText("Unknown")
-            setSubText("unknown")
+            setContentTitle("[TITLE]")
+            setContentText("[TEXT]")
+            setSubText("[SUBTITLE]")
             setLargeIcon(
                 bitmap
             )
@@ -168,8 +147,6 @@ class MyNotificationManager(private val context: Context) {
     }
 
     companion object {
-        private const val NOW_PLAYING_CHANNEL_ID =
-            "com.jurajkusnier.natureandrelaxingsounds.NOW_PLAYING"
         private const val NOW_PLAYING_NOTIFICATION_ID = 0x1
     }
 }

@@ -36,13 +36,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onConnectionSuspended() {
-            // The Service has crashed. Disable transport controls until it automatically reconnects
-            Log.d("=TEST=", "MediaBrowserCompat.ConnectionCallback = suspended")
+            Log.e(TAG, "MediaBrowserCompat.ConnectionCallback: connection suspended")
         }
 
         override fun onConnectionFailed() {
-            // The Service has refused our connection
-            Log.d("=TEST=", "MediaBrowserCompat.ConnectionCallback = connection failed")
+            Log.e(TAG, "MediaBrowserCompat.ConnectionCallback: connection failed")
         }
     }
 
@@ -125,5 +123,9 @@ class MainActivity : AppCompatActivity() {
     private fun bindPlayPauseButton(state: PlaybackStateCompat) {
         findViewById<Button>(R.id.playPauseButton).text =
             if (state.state == PlaybackStateCompat.STATE_PLAYING) "pause" else "play"
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }
