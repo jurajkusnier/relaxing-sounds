@@ -2,6 +2,7 @@ package com.jurajkusnier.natureandrelaxingsounds
 
 import android.content.ComponentName
 import android.media.AudioManager
+import android.media.MediaMetadata.METADATA_KEY_MEDIA_ID
 import android.media.MediaMetadata.METADATA_KEY_TITLE
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,12 +13,14 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.jurajkusnier.common.MediaPlaybackService
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mediaBrowser: MediaBrowserCompat
+    private val playlistAdapter = PlaylistAdapter()
 
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
@@ -36,6 +39,23 @@ class MainActivity : AppCompatActivity() {
 
             // Finish building the UI
             buildTransportControls()
+
+            mediaBrowser.subscribe(mediaBrowser.root,
+                object : MediaBrowserCompat.SubscriptionCallback() {
+
+                    override fun onChildrenLoaded(
+                        parentId: String,
+                        children: MutableList<MediaBrowserCompat.MediaItem>
+                    ) {
+                        playlistAdapter.submitList(children.map {
+                            Sound(
+                                it.mediaId ?: "",
+                                it.description.title?.toString() ?: "EMPTY",
+                                it.mediaId == currentMediaId
+                            )
+                        })
+                    }
+                })
         }
 
         override fun onConnectionSuspended() {
@@ -51,6 +71,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mediaBrowser = getMediaBrowser()
+        findViewById<RecyclerView>(R.id.playlistRecyclerView).adapter = playlistAdapter
     }
 
     public override fun onStart() {
@@ -130,7 +151,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindMediaInfo(metadata: MediaMetadataCompat) {
         findViewById<TextView>(R.id.titleTextView).text = metadata.getString(METADATA_KEY_TITLE)
+        currentMediaId = metadata.getString(METADATA_KEY_MEDIA_ID)
     }
+
+    private var currentMediaId:String? = null
 
     private fun bindPlayPauseButton(state: PlaybackStateCompat) {
         findViewById<MaterialButton>(R.id.playPauseButton).setIconResource(

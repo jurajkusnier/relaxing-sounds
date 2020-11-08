@@ -71,6 +71,7 @@ class SimpleMediaPlayerImpl(
     private fun updateSessionMetadata() {
         mediaSession.setMetadata(
             MediaMetadataCompat.Builder()
+                .putString(MediaMetadata.METADATA_KEY_MEDIA_ID, playlist.getSong().id)
                 .putString(MediaMetadata.METADATA_KEY_TITLE, playlist.getSong().title)
                 .putString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE, playlist.getSong().subtitle)
                 .build()
