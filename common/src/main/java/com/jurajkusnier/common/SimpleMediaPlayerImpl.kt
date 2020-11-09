@@ -20,13 +20,17 @@ class SimpleMediaPlayerImpl(
 ) : SimpleMediaPlayer {
 
     init {
+        loadCurrentSong()
+        updateSessionMetadata()
+        updatePlaybackState()
+        updateNotification()
+    }
+
+    private fun loadCurrentSong() {
         player.apply {
             loadSound(assetManager, playlist.getSong())
             player.isLooping = true
         }
-        updateSessionMetadata()
-        updatePlaybackState()
-        updateNotification()
     }
 
     override fun playPause() {
@@ -38,15 +42,27 @@ class SimpleMediaPlayerImpl(
     }
 
     override fun next() {
+        val wasPlaying = player.isPlaying
         playlist.skipToNext()
+        loadCurrentSong()
         updateSessionMetadata()
-        updateNotification()
+        if (wasPlaying) {
+            play()
+        } else {
+            updateNotification()
+        }
     }
 
     override fun prev() {
+        val wasPlaying = player.isPlaying
         playlist.skipToPrev()
+        loadCurrentSong()
         updateSessionMetadata()
-        updateNotification()
+        if (wasPlaying) {
+            play()
+        } else {
+            updateNotification()
+        }
     }
 
     override fun release() {
