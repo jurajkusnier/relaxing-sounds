@@ -2,81 +2,33 @@ package com.jurajkusnier.natureandrelaxingsounds
 
 import android.content.ComponentName
 import android.media.AudioManager
-import android.media.MediaMetadata.METADATA_KEY_MEDIA_ID
-import android.media.MediaMetadata.METADATA_KEY_TITLE
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.jurajkusnier.common.MediaPlaybackService
+import com.jurajkusnier.common.MediaServiceConnection
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mediaBrowser: MediaBrowserCompat
+    private lateinit var viewModel: MainActivityViewModel
     private val playlistAdapter = PlaylistAdapter()
-
-    private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
-        override fun onConnected() {
-
-            mediaBrowser.sessionToken.also { token ->
-
-                // Create a MediaControllerCompat
-                val mediaController = MediaControllerCompat(
-                    this@MainActivity, // Context
-                    token
-                )
-
-                // Save the controller
-                MediaControllerCompat.setMediaController(this@MainActivity, mediaController)
-            }
-
-            // Finish building the UI
-            buildTransportControls()
-
-            mediaBrowser.subscribe(mediaBrowser.root,
-                object : MediaBrowserCompat.SubscriptionCallback() {
-
-                    override fun onChildrenLoaded(
-                        parentId: String,
-                        children: MutableList<MediaBrowserCompat.MediaItem>
-                    ) {
-                        playlistAdapter.submitList(children.map {
-                            Sound(
-                                it.mediaId ?: "",
-                                it.description.title?.toString() ?: "EMPTY",
-                                it.mediaId == currentMediaId
-                            )
-                        })
-                    }
-                })
-        }
-
-        override fun onConnectionSuspended() {
-            Log.e(TAG, "MediaBrowserCompat.ConnectionCallback: connection suspended")
-        }
-
-        override fun onConnectionFailed() {
-            Log.e(TAG, "MediaBrowserCompat.ConnectionCallback: connection failed")
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mediaBrowser = getMediaBrowser()
-        findViewById<RecyclerView>(R.id.playlistRecyclerView).adapter = playlistAdapter
-    }
 
-    public override fun onStart() {
-        super.onStart()
-        startMediaBrowser()
+        val mediaServiceConnection = MediaServiceConnection(
+            applicationContext,
+            ComponentName(applicationContext, MediaPlaybackService::class.java)
+        )
+        val factory = MainActivityViewModelFactory(mediaServiceConnection)
+        viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
+
+        setupUI()
     }
 
     public override fun onResume() {
@@ -84,88 +36,46 @@ class MainActivity : AppCompatActivity() {
         setupVolumeControlStream()
     }
 
-    public override fun onStop() {
-        super.onStop()
-        stopMediaBrowser()
+    private fun setupUI() {
+        findViewById<RecyclerView>(R.id.playlistRecyclerView).adapter = playlistAdapter
+        setupControls()
+
+        viewModel.playlist.observe(this) {
+            playlistAdapter.submitList(it)
+        }
+
+        viewModel.playbackState.observe(this) {
+            bindMediaInfo(it.mediaTitle)
+            bindPlayPauseButton(it.isPlaying)
+        }
     }
 
-    fun buildTransportControls() {
-        val mediaController = MediaControllerCompat.getMediaController(this@MainActivity)
-
+    private fun setupControls() {
         findViewById<Button>(R.id.playPauseButton).setOnClickListener {
-            val pbState = mediaController.playbackState.state
-            if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-                mediaController.transportControls.pause()
-            } else {
-                mediaController.transportControls.play()
-            }
+            viewModel.playPause()
         }
-
         findViewById<Button>(R.id.nextButton).setOnClickListener {
-            mediaController.transportControls.skipToNext()
+            viewModel.next()
         }
-
         findViewById<Button>(R.id.prevButton).setOnClickListener {
-            mediaController.transportControls.skipToPrevious()
+            viewModel.prev()
         }
-
-        // Display the initial state
-        bindPlayPauseButton(mediaController.playbackState)
-        bindMediaInfo(mediaController.metadata)
-
-        // Register a Callback to stay in sync
-        mediaController.registerCallback(controllerCallback)
-    }
-
-    private var controllerCallback = object : MediaControllerCompat.Callback() {
-
-        override fun onMetadataChanged(metadata: MediaMetadataCompat) {
-            bindMediaInfo(metadata)
-        }
-
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
-            bindPlayPauseButton(state)
-        }
-    }
-
-    private fun getMediaBrowser() = MediaBrowserCompat(
-        this,
-        ComponentName(this, MediaPlaybackService::class.java),
-        connectionCallbacks,
-        null // optional Bundle
-    )
-
-    private fun startMediaBrowser() {
-        mediaBrowser.connect()
-    }
-
-    private fun stopMediaBrowser() {
-        MediaControllerCompat.getMediaController(this)?.unregisterCallback(controllerCallback)
-        mediaBrowser.disconnect()
-
     }
 
     private fun setupVolumeControlStream() {
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
-    private fun bindMediaInfo(metadata: MediaMetadataCompat) {
-        findViewById<TextView>(R.id.titleTextView).text = metadata.getString(METADATA_KEY_TITLE)
-        currentMediaId = metadata.getString(METADATA_KEY_MEDIA_ID)
+    private fun bindMediaInfo(mediaTitle:String) {
+        findViewById<TextView>(R.id.titleTextView).text = mediaTitle
     }
 
-    private var currentMediaId:String? = null
-
-    private fun bindPlayPauseButton(state: PlaybackStateCompat) {
+    private fun bindPlayPauseButton(isPlaying: Boolean) {
         findViewById<MaterialButton>(R.id.playPauseButton).setIconResource(
-            if (state.state == PlaybackStateCompat.STATE_PLAYING)
+            if (isPlaying)
                 R.drawable.ic_baseline_pause_24
             else
                 R.drawable.ic_baseline_play_arrow_24
         )
-    }
-
-    companion object {
-        private const val TAG = "MainActivity"
     }
 }
