@@ -7,9 +7,11 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 
 data class Sound(
     val id: String,
@@ -33,7 +35,8 @@ class PlaylistAdapter : ListAdapter<Sound, PlaylistAdapter.ViewHolder>(ITEM_COMP
     class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(sound: Sound) {
-            view.findViewById<TextView>(R.id.itemTitle).text = "$sound"
+            view.findViewById<MaterialCardView>(R.id.itemCardView).isChecked = sound.isSelected
+            view.findViewById<TextView>(R.id.itemTitle).text = sound.title
             sound.icon?.let { view.findViewById<ImageView>(R.id.itemIcon).setImageResource(it) }
         }
     }

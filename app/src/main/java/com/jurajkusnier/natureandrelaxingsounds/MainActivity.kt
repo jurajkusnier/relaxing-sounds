@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.jurajkusnier.common.MediaPlaybackService
@@ -37,7 +39,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        findViewById<RecyclerView>(R.id.playlistRecyclerView).adapter = playlistAdapter
+        val space = resources.getDimensionPixelSize(R.dimen.item_spacing)
+        val spanCount = resources.getInteger(R.integer.span_count)
+        findViewById<RecyclerView>(R.id.playlistRecyclerView).apply {
+            layoutManager = GridLayoutManager(context, spanCount)
+            addItemDecoration(GridItemDecoration(space))
+            adapter = playlistAdapter
+        }
         setupControls()
 
         viewModel.playlist.observe(this) {
@@ -66,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
-    private fun bindMediaInfo(mediaTitle:String) {
+    private fun bindMediaInfo(mediaTitle: String) {
         findViewById<TextView>(R.id.titleTextView).text = mediaTitle
     }
 
