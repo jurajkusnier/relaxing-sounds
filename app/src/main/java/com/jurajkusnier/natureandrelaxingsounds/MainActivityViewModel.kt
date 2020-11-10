@@ -49,12 +49,8 @@ class MainActivityViewModel(private val mediaServiceConnection: MediaServiceConn
         mediaServiceConnection.playPause()
     }
 
-    fun play() {
-        mediaServiceConnection.play()
-    }
-
-    fun pause() {
-        mediaServiceConnection.pause()
+    fun playPause(mediaId: String) {
+        mediaServiceConnection.playPause(mediaId)
     }
 
     fun next() {
@@ -67,6 +63,7 @@ class MainActivityViewModel(private val mediaServiceConnection: MediaServiceConn
 
 }
 
+@Suppress("UNCHECKED_CAST")
 class MainActivityViewModelFactory(private val mediaServiceConnection: MediaServiceConnection) :
     ViewModelProvider.Factory {
 

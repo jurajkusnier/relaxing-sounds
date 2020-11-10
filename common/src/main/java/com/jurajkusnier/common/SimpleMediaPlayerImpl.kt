@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.AssetManager
 import android.media.MediaMetadata
 import android.media.MediaPlayer
+import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -168,6 +169,21 @@ class SimpleMediaPlayerImpl(
 
         override fun onSkipToPrevious() {
             prev()
+        }
+
+        override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
+            if (playlist.getSong().id == mediaId) {
+                if (!player.isPlaying) {
+                    play()
+                } else {
+                    pause()
+                }
+                return
+            }
+            playlist.skipTo(mediaId)
+            loadCurrentSong()
+            updateSessionMetadata()
+            play()
         }
     }
 

@@ -1,12 +1,11 @@
 package com.jurajkusnier.common
 
-import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 
 class PlaylistImpl(private val sounds: List<Sound>) : Playlist<Sound> {
 
-    var currentIndex = 0
+    private var currentIndex = 0
 
     override fun getSong(): Sound = sounds[currentIndex]
 
@@ -28,6 +27,13 @@ class PlaylistImpl(private val sounds: List<Sound>) : Playlist<Sound> {
                     .setIcon(sound.icon)
                     .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
             )
+        }
+    }
+
+    override fun <String> skipTo(id: String) {
+        val index = sounds.indexOfFirst { it.id == id }
+        if (index >= -1) {
+            currentIndex = index
         }
     }
 }

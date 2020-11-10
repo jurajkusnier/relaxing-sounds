@@ -41,12 +41,8 @@ class MediaServiceConnection(context: Context, serviceComponent: ComponentName) 
         }
     }
 
-    fun play() {
-        mediaController.transportControls.play()
-    }
-
-    fun pause() {
-        mediaController.transportControls.pause()
+    fun playPause(mediaId: String) {
+        mediaController.transportControls.playFromMediaId(mediaId, null)
     }
 
     fun next() {
@@ -81,11 +77,11 @@ class MediaServiceConnection(context: Context, serviceComponent: ComponentName) 
         }
 
         override fun onConnectionSuspended() {
-            Log.e(TAG,"MediaBrowserConnectionCallback: connection suspended")
+            Log.e(TAG, "MediaBrowserConnectionCallback: connection suspended")
         }
 
         override fun onConnectionFailed() {
-            Log.e(TAG,"MediaBrowserConnectionCallback: connection failed")
+            Log.e(TAG, "MediaBrowserConnectionCallback: connection failed")
         }
     }
 

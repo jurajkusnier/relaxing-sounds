@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,6 @@ import com.jurajkusnier.common.MediaServiceConnection
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
-    private val playlistAdapter = PlaylistAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupUI() {
         val space = resources.getDimensionPixelSize(R.dimen.item_spacing)
         val spanCount = resources.getInteger(R.integer.span_count)
+        val playlistAdapter = PlaylistAdapter {sound ->
+            viewModel.playPause(sound.id)
+        }
         findViewById<RecyclerView>(R.id.playlistRecyclerView).apply {
             layoutManager = GridLayoutManager(context, spanCount)
             addItemDecoration(GridItemDecoration(space))
