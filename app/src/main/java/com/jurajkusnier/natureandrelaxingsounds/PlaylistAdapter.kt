@@ -3,12 +3,20 @@ package com.jurajkusnier.natureandrelaxingsounds
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-data class Sound(val id: String, val title: String, val isSelected: Boolean)
+data class Sound(
+    val id: String,
+    val title: String,
+    @DrawableRes val icon: Int?,
+    val isSelected: Boolean
+)
 
 class PlaylistAdapter : ListAdapter<Sound, PlaylistAdapter.ViewHolder>(ITEM_COMPARATOR) {
 
@@ -26,6 +34,7 @@ class PlaylistAdapter : ListAdapter<Sound, PlaylistAdapter.ViewHolder>(ITEM_COMP
 
         fun bind(sound: Sound) {
             view.findViewById<TextView>(R.id.itemTitle).text = "$sound"
+            sound.icon?.let { view.findViewById<ImageView>(R.id.itemIcon).setImageResource(it) }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.jurajkusnier.common
 
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 
@@ -24,6 +25,7 @@ class PlaylistImpl(private val sounds: List<Sound>) : Playlist<Sound> {
                     .setMediaId(sound.id)
                     .setTitle(sound.title)
                     .setSubtitle(sound.subtitle)
+                    .setIcon(sound.icon)
                     .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
             )
         }
