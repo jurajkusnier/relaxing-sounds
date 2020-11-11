@@ -34,7 +34,7 @@ class MyNotificationManager(private val context: Context) {
                 )
             )
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            setSmallIcon(R.drawable.ic_notification)
+            setSmallIcon(R.drawable.ic_baseline_music_note_24)
             color = ContextCompat.getColor(context, R.color.design_default_color_background)
             addAction(actionPrevious)
             addAction(if (isPlaying) actionPause else actionPlay)
