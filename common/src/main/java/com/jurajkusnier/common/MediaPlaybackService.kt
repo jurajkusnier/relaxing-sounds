@@ -14,12 +14,13 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
 
     private lateinit var myMediaSession: MediaSessionCompat
     private lateinit var simpleMediaPlayer: SimpleMediaPlayer
-    private var isForeground: Boolean = false
+    private lateinit var playlist: Playlist<Sound>
 
-    private val playlist: Playlist<Sound> = PlaylistImpl(SOUNDS)
+    private var isForeground: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
+        playlist = PlaylistImpl(getSounds())
         myMediaSession = getMediaSession()
         sessionToken = myMediaSession.sessionToken
         simpleMediaPlayer = SimpleMediaPlayerImpl(
@@ -76,52 +77,101 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
         simpleMediaPlayer.release()
     }
 
+    private fun getSounds() = listOf(
+        Sound(
+            "BEACH",
+            getString(R.string.beach),
+            getString(R.string.relaxing_sounds),
+            R.drawable.beach,
+            "beach.mp3"
+        ),
+        Sound(
+            "BIRDS",
+            getString(R.string.birds),
+            getString(R.string.relaxing_sounds),
+            R.drawable.birds,
+            "birds.mp3"
+        ),
+        Sound(
+            "BRAZILFOREST",
+            getString(R.string.brazil_forest),
+            getString(R.string.relaxing_sounds),
+            R.drawable.brazil,
+            "brazilforest.mp3"
+        ),
+        Sound(
+            "GARDEN",
+            getString(R.string.country_garden),
+            getString(R.string.relaxing_sounds),
+            R.drawable.garden,
+            "countrygarden.mp3"
+        ),
+        Sound(
+            "CREEK",
+            getString(R.string.creek),
+            getString(R.string.relaxing_sounds),
+            R.drawable.creek,
+            "creek.mp3"
+        ),
+        Sound(
+            "FIRE",
+            getString(R.string.fire),
+            getString(R.string.relaxing_sounds),
+            R.drawable.fire,
+            "fire.mp3"
+        ),
+        Sound(
+            "FOREST",
+            getString(R.string.forest),
+            getString(R.string.relaxing_sounds),
+            R.drawable.forest,
+            "forest.mp3"
+        ),
+        Sound(
+            "FOUNTAIN",
+            getString(R.string.fountain),
+            getString(R.string.relaxing_sounds),
+            R.drawable.fountain,
+            "fountain.mp3"
+        ),
+        Sound(
+            "HEARTBEAT",
+            getString(R.string.heartbeat),
+            getString(R.string.relaxing_sounds),
+            R.drawable.heart,
+            "heartbeat.mp3"
+        ),
+        Sound(
+            "RAIN",
+            getString(R.string.rain),
+            getString(R.string.relaxing_sounds),
+            R.drawable.rain,
+            "rain.mp3"
+        ),
+        Sound(
+            "RAINFOREST",
+            getString(R.string.rainforest),
+            getString(R.string.relaxing_sounds),
+            R.drawable.rainforest,
+            "rainforest.mp3"
+        ),
+        Sound(
+            "THUNDERSTORM",
+            getString(R.string.thunderstorm),
+            getString(R.string.relaxing_sounds),
+            R.drawable.thunder,
+            "thunderstorm.mp3"
+        ),
+        Sound(
+            "WHITENOISE",
+            getString(R.string.white_noise),
+            getString(R.string.relaxing_sounds),
+            R.drawable.whitenoise,
+            "whitenoise.wav"
+        ),
+    )
+
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
-        private val SOUNDS = listOf(
-            Sound("BEACH", "Beach", "Beach Subtitle", R.drawable.beach, "beach.mp3"),
-            Sound("BIRDS", "Birds", "Birds Subtitle", R.drawable.birds, "birds.mp3"),
-            Sound(
-                "BRAZILFOREST",
-                "Brazil Forest",
-                "Brazil Forest Subtitle",
-                R.drawable.brazil,
-                "brazilforest.mp3"
-            ),
-            Sound(
-                "GARDEN",
-                "Country Garden",
-                "Country Garden Subtitle",
-                R.drawable.garden,
-                "countrygarden.mp3"
-            ),
-            Sound("CREEK", "Creek", "Creek Subtitle", R.drawable.creek, "creek.mp3"),
-            Sound("FIRE", "Fire", "Fire Subtitle", R.drawable.fire, "fire.mp3"),
-            Sound("FOREST", "Forest", "Forest Subtitle", R.drawable.forest, "forest.mp3"),
-            Sound("FOUNTAIN", "Fountain", "Fountain Subtitle", R.drawable.fountain, "fountain.mp3"),
-            Sound("HEARTBEAT", "Hearbeat", "Heartbeat Subtitle", R.drawable.heart, "heartbeat.mp3"),
-            Sound("RAIN", "Rain", "Rain Subtitle", R.drawable.rain, "rain.mp3"),
-            Sound(
-                "RAINFOREST",
-                "Rainforest",
-                "Rainforest Subtitle",
-                R.drawable.rainforest,
-                "rainforest.mp3"
-            ),
-            Sound(
-                "THUNDERSTORM",
-                "Thunderstorm",
-                "Thunderstorm Subtitle",
-                R.drawable.thunder,
-                "thunderstorm.mp3"
-            ),
-            Sound(
-                "WHITENOISE",
-                "White noise",
-                "White noise Subtitle",
-                R.drawable.whitenoise,
-                "whitenoise.wav"
-            ),
-        )
     }
 }

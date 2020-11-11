@@ -96,7 +96,7 @@ class SimpleMediaPlayerImpl(
     }
 
     private fun updateNotification() {
-        notificationManager.showNotification(mediaSession, player.isPlaying)
+        notificationManager.showNotification(mediaSession, playlist.getSong(), player.isPlaying)
     }
 
     private fun updatePlaybackState() {

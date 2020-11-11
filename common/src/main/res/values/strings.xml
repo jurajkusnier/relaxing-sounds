@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="beach">Beach</string>
+    <string name="birds">Birds</string>
+    <string name="brazil_forest">Brazil Forest</string>
+    <string name="country_garden">Country Garden</string>
+    <string name="creek">Creek</string>
+    <string name="fire">Fire</string>
+    <string name="forest">Forest</string>
+    <string name="fountain">Fountain</string>
+    <string name="heartbeat">Heartbeat</string>
+    <string name="rain">Rain</string>
+    <string name="rainforest">Rainforest</string>
+    <string name="thunderstorm">Thunderstorm</string>
+    <string name="white_noise">White noise</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="media_player">Media Player</string>
+    <string name="relaxing_sounds">Relaxing Sounds</string>
+</resources>
