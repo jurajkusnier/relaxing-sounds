@@ -91,6 +91,7 @@ class SimpleMediaPlayerImpl(
                 .putString(MediaMetadata.METADATA_KEY_MEDIA_ID, playlist.getSong().id)
                 .putString(MediaMetadata.METADATA_KEY_TITLE, playlist.getSong().title)
                 .putString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE, playlist.getSong().subtitle)
+                .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI,  playlist.getSong().resourceUri)
                 .build()
         )
     }
@@ -185,6 +186,10 @@ class SimpleMediaPlayerImpl(
             updateSessionMetadata()
             play()
         }
+    }
+
+    companion object {
+        const val RESOURCE_ROOT_URI = "android.resource://com.jurajkusnier.natureandrelaxingsounds/drawable/"
     }
 
 }

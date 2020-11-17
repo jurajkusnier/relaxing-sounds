@@ -61,7 +61,7 @@ class MediaServiceConnection(context: Context, serviceComponent: ComponentName) 
                 registerCallback(MediaControllerCallback())
             }
 
-            mediaBrowser.subscribe(mediaBrowser.root,
+            mediaBrowser.subscribe(PlaylistImpl.ROOT_ITEM_ID, //TODO: remove PlaylistImpl dependency
                 object : MediaBrowserCompat.SubscriptionCallback() {
 
                     override fun onChildrenLoaded(

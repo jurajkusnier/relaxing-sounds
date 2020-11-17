@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -24,7 +23,6 @@ class MyNotificationManager(private val context: Context) {
         val builder = NotificationCompat.Builder(context, channelId).apply {
             setContentTitle(sound.title)
             setContentText(sound.subtitle)
-            setLargeIcon(BitmapFactory.decodeResource(context.resources, sound.icon))
             setNotificationSilent()
             setContentIntent(mediaSession.controller.sessionActivity)
             setDeleteIntent(

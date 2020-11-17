@@ -1,11 +1,11 @@
 package com.jurajkusnier.natureandrelaxingsounds
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +14,7 @@ import com.google.android.material.card.MaterialCardView
 data class Sound(
     val id: String,
     val title: String,
-    @DrawableRes val icon: Int?,
+    val iconUri: Uri?,
     val isSelected: Boolean
 )
 
@@ -42,7 +42,7 @@ class PlaylistAdapter(private val onClickListener: (Sound) -> Unit) :
                 }
             }
             view.findViewById<TextView>(R.id.itemTitle).text = sound.title
-            sound.icon?.let { view.findViewById<ImageView>(R.id.itemIcon).setImageResource(it) }
+            sound.iconUri?.let { view.findViewById<ImageView>(R.id.itemIcon).setImageURI(it) }
         }
     }
 

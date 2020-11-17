@@ -1,5 +1,6 @@
 package com.jurajkusnier.common
 
+import android.content.Context
 import android.support.v4.media.MediaBrowserCompat
 
 interface Playlist<T> {
@@ -7,5 +8,6 @@ interface Playlist<T> {
     fun <N> skipTo(id: N)
     fun skipToNext()
     fun skipToPrev()
-    fun toMediaItemList(): List<MediaBrowserCompat.MediaItem>
+    fun toMediaItemList(context: Context): List<MediaBrowserCompat.MediaItem>
+    fun getRootItem(context: Context): MediaBrowserCompat.MediaItem
 }

@@ -3,7 +3,6 @@ package com.jurajkusnier.natureandrelaxingsounds
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
 import com.jurajkusnier.common.MediaServiceConnection
-import com.jurajkusnier.common.getIcon
 import com.jurajkusnier.common.id
 import com.jurajkusnier.common.title
 import kotlinx.coroutines.flow.collect
@@ -35,7 +34,7 @@ class MainActivityViewModel(private val mediaServiceConnection: MediaServiceConn
                     Sound(
                         item.mediaId ?: "",
                         item.description.title?.toString() ?: "EMPTY",
-                        item.getIcon(),
+                        item.description.iconUri,
                         item.mediaId == nowPlaying.id
                     )
                 }

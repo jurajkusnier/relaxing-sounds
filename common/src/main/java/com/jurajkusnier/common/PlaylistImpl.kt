@@ -1,7 +1,12 @@
 package com.jurajkusnier.common
 
+import android.content.Context
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
+import android.util.Log
+import androidx.core.net.toUri
+import com.jurajkusnier.common.SimpleMediaPlayerImpl.Companion.RESOURCE_ROOT_URI
 
 class PlaylistImpl(private val sounds: List<Sound>) : Playlist<Sound> {
 
@@ -17,17 +22,39 @@ class PlaylistImpl(private val sounds: List<Sound>) : Playlist<Sound> {
         currentIndex = (currentIndex + sounds.size - 1) % sounds.size
     }
 
-    override fun toMediaItemList(): List<MediaBrowserCompat.MediaItem> {
+    override fun toMediaItemList(context: Context): List<MediaBrowserCompat.MediaItem> {
         return sounds.map { sound ->
+            Log.d("=TEST=", "URI: ${(sound.resourceUri).toUri()}")
+
             MediaBrowserCompat.MediaItem(
                 MediaDescriptionCompat.Builder()
                     .setMediaId(sound.id)
-                    .setTitle(sound.title)
+                    .setTitle(sound.title + " 10")
                     .setSubtitle(sound.subtitle)
-                    .setIcon(sound.icon)
+                    .setIconUri(sound.resourceUri.toUri())
+                    .setExtras(
+                        Bundle().apply {
+                            putBoolean(CONTENT_STYLE_SUPPORTED, true)
+                            putInt(CONTENT_STYLE_PLAYABLE_HINT, CONTENT_STYLE_GRID)
+                        })
                     .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
             )
         }
+    }
+
+    override fun getRootItem(context: Context): MediaBrowserCompat.MediaItem {
+        return MediaBrowserCompat.MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setMediaId(ROOT_ITEM_ID)
+                .setTitle(context.getString(R.string.sound_library))
+                .setIconUri((RESOURCE_ROOT_URI + context.resources.getResourceEntryName(R.drawable.ic_baseline_library_music_24)).toUri())
+                .setExtras(
+                    Bundle().apply {
+                        putBoolean(CONTENT_STYLE_SUPPORTED, true)
+                        putInt(CONTENT_STYLE_BROWSABLE_HINT, CONTENT_STYLE_LIST)
+                    })
+                .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+        )
     }
 
     override fun <String> skipTo(id: String) {
@@ -35,5 +62,16 @@ class PlaylistImpl(private val sounds: List<Sound>) : Playlist<Sound> {
         if (index >= -1) {
             currentIndex = index
         }
+    }
+
+    companion object {
+        private const val CONTENT_STYLE_BROWSABLE_HINT =
+            "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
+        private const val CONTENT_STYLE_PLAYABLE_HINT =
+            "android.media.browse.CONTENT_STYLE_PLAYABLE_HINT"
+        private const val CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED"
+        private const val CONTENT_STYLE_LIST = 1
+        private const val CONTENT_STYLE_GRID = 2
+        const val ROOT_ITEM_ID = "ROOT_ID"
     }
 }
