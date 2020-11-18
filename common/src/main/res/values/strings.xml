@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Nature and Relaxing Sounds 2020</string>
     <string name="beach">Beach</string>
     <string name="birds">Birds</string>
     <string name="brazil_forest">Brazil Forest</string>

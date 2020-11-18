@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import android.util.Log
 import androidx.core.net.toUri
 import com.jurajkusnier.common.SimpleMediaPlayerImpl.Companion.RESOURCE_ROOT_URI
 
@@ -24,12 +23,10 @@ class PlaylistImpl(private val sounds: List<Sound>) : Playlist<Sound> {
 
     override fun toMediaItemList(context: Context): List<MediaBrowserCompat.MediaItem> {
         return sounds.map { sound ->
-            Log.d("=TEST=", "URI: ${(sound.resourceUri).toUri()}")
-
             MediaBrowserCompat.MediaItem(
                 MediaDescriptionCompat.Builder()
                     .setMediaId(sound.id)
-                    .setTitle(sound.title + " 10")
+                    .setTitle(sound.title)
                     .setSubtitle(sound.subtitle)
                     .setIconUri(sound.resourceUri.toUri())
                     .setExtras(
