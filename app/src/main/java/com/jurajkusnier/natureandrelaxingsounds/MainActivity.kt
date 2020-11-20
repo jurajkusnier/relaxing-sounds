@@ -3,23 +3,22 @@ package com.jurajkusnier.natureandrelaxingsounds
 import android.content.ComponentName
 import android.media.AudioManager
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import com.jurajkusnier.common.MediaPlaybackService
 import com.jurajkusnier.common.MediaServiceConnection
+import com.jurajkusnier.natureandrelaxingsounds.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val mediaServiceConnection = MediaServiceConnection(
             applicationContext,
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val playlistAdapter = PlaylistAdapter {sound ->
             viewModel.playPause(sound.id)
         }
-        findViewById<RecyclerView>(R.id.playlistRecyclerView).apply {
+        binding.playlistRecyclerView.apply {
             layoutManager = GridLayoutManager(context, spanCount)
             addItemDecoration(GridItemDecoration(space))
             adapter = playlistAdapter
@@ -60,13 +59,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupControls() {
-        findViewById<Button>(R.id.playPauseButton).setOnClickListener {
+        binding.playPauseButton.setOnClickListener {
             viewModel.playPause()
         }
-        findViewById<Button>(R.id.nextButton).setOnClickListener {
+        binding.nextButton.setOnClickListener {
             viewModel.next()
         }
-        findViewById<Button>(R.id.prevButton).setOnClickListener {
+        binding.prevButton.setOnClickListener {
             viewModel.prev()
         }
     }
@@ -76,11 +75,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindMediaInfo(mediaTitle: String) {
-        findViewById<TextView>(R.id.titleTextView).text = mediaTitle
+        binding.titleTextView.text = mediaTitle
     }
 
     private fun bindPlayPauseButton(isPlaying: Boolean) {
-        findViewById<MaterialButton>(R.id.playPauseButton).setIconResource(
+        binding.playPauseButton.setIconResource(
             if (isPlaying)
                 R.drawable.ic_baseline_pause_24
             else
