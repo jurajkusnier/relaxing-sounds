@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.media.session.MediaButtonReceiver
 import com.jurajkusnier.common.R
-import com.jurajkusnier.common.Sound
+import com.jurajkusnier.common.data.Sound
 
 class MyNotificationManager(private val context: Context) {
 

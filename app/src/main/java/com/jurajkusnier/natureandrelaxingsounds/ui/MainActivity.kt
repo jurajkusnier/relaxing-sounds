@@ -1,4 +1,4 @@
-package com.jurajkusnier.natureandrelaxingsounds
+package com.jurajkusnier.natureandrelaxingsounds.ui
 
 import android.content.ComponentName
 import android.media.AudioManager
@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.jurajkusnier.common.MediaPlaybackService
-import com.jurajkusnier.common.MediaServiceConnection
+import com.jurajkusnier.natureandrelaxingsounds.MainActivityViewModel
+import com.jurajkusnier.natureandrelaxingsounds.MainActivityViewModelFactory
+import com.jurajkusnier.natureandrelaxingsounds.R
 import com.jurajkusnier.natureandrelaxingsounds.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val space = resources.getDimensionPixelSize(R.dimen.item_spacing)
         val spanCount = resources.getInteger(R.integer.span_count)
         val playlistAdapter = PlaylistAdapter {sound ->
-            viewModel.playPause(sound.id)
+            viewModel.playPause(sound)
         }
         binding.playlistRecyclerView.apply {
             layoutManager = GridLayoutManager(context, spanCount)

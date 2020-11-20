@@ -8,7 +8,12 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
-import com.jurajkusnier.common.SimpleMediaPlayerImpl.Companion.RESOURCE_ROOT_URI
+import com.jurajkusnier.common.data.Sound
+import com.jurajkusnier.common.player.SimpleMediaPlayer
+import com.jurajkusnier.common.player.SimpleMediaPlayerImpl
+import com.jurajkusnier.common.player.SimpleMediaPlayerImpl.Companion.RESOURCE_ROOT_URI
+import com.jurajkusnier.common.playlist.Playlist
+import com.jurajkusnier.common.playlist.PlaylistImpl
 import com.jurajkusnier.common.utils.MyNotificationManager
 
 class MediaPlaybackService : MediaBrowserServiceCompat() {

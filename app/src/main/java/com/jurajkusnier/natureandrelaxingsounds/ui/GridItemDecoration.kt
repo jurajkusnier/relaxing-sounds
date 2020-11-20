@@ -1,4 +1,4 @@
-package com.jurajkusnier.natureandrelaxingsounds
+package com.jurajkusnier.natureandrelaxingsounds.ui
 
 import android.graphics.Rect
 import android.view.View

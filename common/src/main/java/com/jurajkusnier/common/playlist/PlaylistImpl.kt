@@ -1,11 +1,13 @@
-package com.jurajkusnier.common
+package com.jurajkusnier.common.playlist
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import androidx.core.net.toUri
-import com.jurajkusnier.common.SimpleMediaPlayerImpl.Companion.RESOURCE_ROOT_URI
+import com.jurajkusnier.common.R
+import com.jurajkusnier.common.player.SimpleMediaPlayerImpl.Companion.RESOURCE_ROOT_URI
+import com.jurajkusnier.common.data.Sound
 
 class PlaylistImpl(private val sounds: List<Sound>) : Playlist<Sound> {
 

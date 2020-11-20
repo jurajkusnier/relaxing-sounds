@@ -1,19 +1,12 @@
-package com.jurajkusnier.natureandrelaxingsounds
+package com.jurajkusnier.natureandrelaxingsounds.ui
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.jurajkusnier.natureandrelaxingsounds.data.Sound
 import com.jurajkusnier.natureandrelaxingsounds.databinding.ListItemBinding
-
-data class Sound(
-    val id: String,
-    val title: String,
-    val iconUri: Uri?,
-    val isSelected: Boolean
-)
 
 class PlaylistAdapter(private val onClickListener: (Sound) -> Unit) :
     ListAdapter<Sound, PlaylistAdapter.ViewHolder>(ITEM_COMPARATOR) {
@@ -45,7 +38,7 @@ class PlaylistAdapter(private val onClickListener: (Sound) -> Unit) :
     companion object {
         private val ITEM_COMPARATOR = object : DiffUtil.ItemCallback<Sound>() {
             override fun areItemsTheSame(old: Sound, new: Sound): Boolean {
-                return old::class == new::class
+                return old.id == new.id
             }
 
             override fun areContentsTheSame(old: Sound, new: Sound): Boolean {

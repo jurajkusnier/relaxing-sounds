@@ -1,4 +1,4 @@
-package com.jurajkusnier.common
+package com.jurajkusnier.common.data
 
 data class Sound(
     val id: String,

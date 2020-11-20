@@ -1,4 +1,4 @@
-package com.jurajkusnier.common
+package com.jurajkusnier.common.player
 
 import android.content.Intent
 import android.content.res.AssetManager
@@ -9,6 +9,8 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
+import com.jurajkusnier.common.data.Sound
+import com.jurajkusnier.common.playlist.Playlist
 import com.jurajkusnier.common.utils.MyNotificationManager
 import com.jurajkusnier.common.utils.getKeyEvent
 
@@ -176,8 +178,6 @@ class SimpleMediaPlayerImpl(
             if (playlist.getSong().id == mediaId) {
                 if (!player.isPlaying) {
                     play()
-                } else {
-                    pause()
                 }
                 return
             }

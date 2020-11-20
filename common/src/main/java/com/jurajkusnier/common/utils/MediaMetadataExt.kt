@@ -1,4 +1,4 @@
-package com.jurajkusnier.common
+package com.jurajkusnier.common.utils
 
 import android.support.v4.media.MediaMetadataCompat
 

@@ -1,4 +1,4 @@
-package com.jurajkusnier.common
+package com.jurajkusnier.natureandrelaxingsounds.ui
 
 import android.content.ComponentName
 import android.content.Context
@@ -7,6 +7,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import com.jurajkusnier.common.utils.id
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -41,8 +42,12 @@ class MediaServiceConnection(context: Context, serviceComponent: ComponentName) 
         }
     }
 
-    fun playPause(mediaId: String) {
+    fun play(mediaId: String) {
         mediaController.transportControls.playFromMediaId(mediaId, null)
+    }
+
+    fun pause() {
+        mediaController.transportControls.pause()
     }
 
     fun next() {
@@ -60,17 +65,7 @@ class MediaServiceConnection(context: Context, serviceComponent: ComponentName) 
             mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
                 registerCallback(MediaControllerCallback())
             }
-
-            mediaBrowser.subscribe(PlaylistImpl.ROOT_ITEM_ID, //TODO: remove PlaylistImpl dependency
-                object : MediaBrowserCompat.SubscriptionCallback() {
-
-                    override fun onChildrenLoaded(
-                        parentId: String,
-                        children: MutableList<MediaBrowserCompat.MediaItem>
-                    ) {
-                        _playlist.value = children
-                    }
-                })
+            recursivePlaylistLoad(mediaBrowser.root) { _playlist.value = it}
 
             _playbackState.value = mediaController.playbackState
             _nowPlaying.value = mediaController.metadata
@@ -83,6 +78,26 @@ class MediaServiceConnection(context: Context, serviceComponent: ComponentName) 
         override fun onConnectionFailed() {
             Log.e(TAG, "MediaBrowserConnectionCallback: connection failed")
         }
+    }
+
+    private fun recursivePlaylistLoad(
+        parentId: String,
+        callback: (List<MediaBrowserCompat.MediaItem>) -> Unit
+    ) {
+        mediaBrowser.subscribe(parentId,
+            object : MediaBrowserCompat.SubscriptionCallback() {
+
+                override fun onChildrenLoaded(
+                    parentId: String,
+                    children: MutableList<MediaBrowserCompat.MediaItem>
+                ) {
+                    if (children.size == 1 && children[0].isBrowsable) {
+                        recursivePlaylistLoad(children[0].mediaId!!, callback)
+                    } else {
+                        callback(children)
+                    }
+                }
+            })
     }
 
     private inner class MediaControllerCallback : MediaControllerCompat.Callback() {

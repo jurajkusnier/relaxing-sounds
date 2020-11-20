@@ -1,4 +1,4 @@
-package com.jurajkusnier.common
+package com.jurajkusnier.common.playlist
 
 import android.content.Context
 import android.support.v4.media.MediaBrowserCompat

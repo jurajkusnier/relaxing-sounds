@@ -1,4 +1,4 @@
-package com.jurajkusnier.common
+package com.jurajkusnier.common.player
 
 import android.support.v4.media.session.MediaSessionCompat
 
