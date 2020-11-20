@@ -2,25 +2,49 @@ package com.jurajkusnier.common.player
 
 import android.content.Intent
 import android.content.res.AssetManager
+import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
+import androidx.media.AudioAttributesCompat
+import androidx.media.AudioFocusRequestCompat
+import androidx.media.AudioManagerCompat
 import com.jurajkusnier.common.data.Sound
 import com.jurajkusnier.common.playlist.Playlist
 import com.jurajkusnier.common.utils.MyNotificationManager
 import com.jurajkusnier.common.utils.getKeyEvent
 
 class SimpleMediaPlayerImpl(
+    private val audioManager: AudioManager,
     private val player: MediaPlayer,
     private val assetManager: AssetManager,
     private val notificationManager: MyNotificationManager,
     private val mediaSession: MediaSessionCompat,
     private val playlist: Playlist<Sound>
 ) : SimpleMediaPlayer {
+
+    private val afChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                pause()
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                // Pause playback
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                // Lower the volume, keep playing
+            }
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                // Your app has been granted audio focus again
+                // Raise volume to normal, restart playback if necessary
+            }
+        }
+    }
 
     init {
         loadCurrentSong()
@@ -76,6 +100,7 @@ class SimpleMediaPlayerImpl(
     }
 
     private fun play() {
+        requestFocus()
         player.start()
         updatePlaybackState()
         updateNotification()
@@ -186,6 +211,19 @@ class SimpleMediaPlayerImpl(
             updateSessionMetadata()
             play()
         }
+    }
+
+    private fun requestFocus() {
+        val focusRequest = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN).run {
+            setAudioAttributes(AudioAttributesCompat.Builder().run {
+                setUsage(AudioAttributesCompat.USAGE_GAME)
+                setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
+                build()
+            })
+            setOnAudioFocusChangeListener(afChangeListener, Handler())
+            build()
+        }
+        AudioManagerCompat.requestAudioFocus(audioManager, focusRequest)
     }
 
     companion object {

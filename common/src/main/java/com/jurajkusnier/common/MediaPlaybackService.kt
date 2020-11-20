@@ -1,12 +1,20 @@
 package com.jurajkusnier.common
 
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.content.ContextCompat
+import androidx.media.AudioAttributesCompat
+import androidx.media.AudioFocusRequestCompat
+import androidx.media.AudioManagerCompat
+import androidx.media.AudioManagerCompat.requestAudioFocus
 import androidx.media.MediaBrowserServiceCompat
 import com.jurajkusnier.common.data.Sound
 import com.jurajkusnier.common.player.SimpleMediaPlayer
@@ -34,7 +42,8 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
             assetManager = resources.assets,
             notificationManager = MyNotificationManager(this),
             mediaSession = myMediaSession,
-            playlist = playlist
+            playlist = playlist,
+            audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         )
         myMediaSession.setCallback(simpleMediaPlayer.mediaSessionCallback)
         setupForegroundService()
