@@ -28,20 +28,20 @@ class SimpleMediaPlayerImpl(
     private val playlist: Playlist<Sound>
 ) : SimpleMediaPlayer {
 
+    var pausedByAudioFocus = false
     private val afChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
         when (focusChange) {
-            AudioManager.AUDIOFOCUS_LOSS -> {
+            AudioManager.AUDIOFOCUS_LOSS,
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT,
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                pausedByAudioFocus = player.isPlaying
                 pause()
             }
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                // Pause playback
-            }
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                // Lower the volume, keep playing
-            }
             AudioManager.AUDIOFOCUS_GAIN -> {
-                // Your app has been granted audio focus again
-                // Raise volume to normal, restart playback if necessary
+                if (pausedByAudioFocus) {
+                    pausedByAudioFocus = false
+                    play()
+                }
             }
         }
     }
@@ -216,7 +216,7 @@ class SimpleMediaPlayerImpl(
     private fun requestFocus() {
         val focusRequest = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN).run {
             setAudioAttributes(AudioAttributesCompat.Builder().run {
-                setUsage(AudioAttributesCompat.USAGE_GAME)
+                setUsage(AudioAttributesCompat.USAGE_MEDIA)
                 setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
                 build()
             })
